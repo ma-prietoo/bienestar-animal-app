@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { analyzeAnimalData } from "./animalWellnessAnalysis.js";
-import { cats, initialHistories, scenarios } from "./data.js";
+import { cats as starterCats, initialHistories, scenarios } from "./data.js";
 
 function classNames(...values) {
   return values.filter(Boolean).join(" ");
@@ -41,14 +41,38 @@ function EmptyState({ children }) {
 }
 
 export default function App() {
+  const [pets, setPets] = useState(() => {
+    const savedPets = window.localStorage.getItem("animal-wellness-pets");
+    return savedPets ? JSON.parse(savedPets) : starterCats;
+  });
   const [selectedCat, setSelectedCat] = useState("luna");
   const [scenarioKey, setScenarioKey] = useState("normal");
-  const [histories, setHistories] = useState(initialHistories);
+  const [histories, setHistories] = useState(() => {
+    const savedHistories = window.localStorage.getItem("animal-wellness-histories");
+    return savedHistories ? JSON.parse(savedHistories) : initialHistories;
+  });
+  const [newPet, setNewPet] = useState({
+    name: "",
+    species: "Gato",
+    age: "",
+    note: "",
+  });
 
-  const cat = cats[selectedCat];
+  useEffect(() => {
+    window.localStorage.setItem("animal-wellness-pets", JSON.stringify(pets));
+  }, [pets]);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      "animal-wellness-histories",
+      JSON.stringify(histories)
+    );
+  }, [histories]);
+
+  const cat = pets[selectedCat] || Object.values(pets)[0];
   const scenario = scenarios[scenarioKey];
   const currentData = scenario.data;
-  const currentHistory = histories[selectedCat] || [];
+  const currentHistory = histories[cat.id] || [];
 
   const analysis = useMemo(
     () => analyzeAnimalData(currentData, currentHistory),
@@ -77,6 +101,29 @@ export default function App() {
     };
   }, [analysis.score, currentData, currentHistory]);
 
+  const addPet = (event) => {
+    event.preventDefault();
+
+    const trimmedName = newPet.name.trim();
+    if (!trimmedName) return;
+
+    const id = `${trimmedName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`;
+    const avatar = newPet.species === "Perro" ? "🐶" : newPet.species === "Otro" ? "🐾" : "🐱";
+    const pet = {
+      id,
+      name: trimmedName,
+      avatar,
+      species: newPet.species,
+      age: newPet.age.trim() || "Edad no registrada",
+      note: newPet.note.trim() || "Sin notas adicionales",
+    };
+
+    setPets((prev) => ({ ...prev, [id]: pet }));
+    setHistories((prev) => ({ ...prev, [id]: [] }));
+    setSelectedCat(id);
+    setNewPet({ name: "", species: "Gato", age: "", note: "" });
+  };
+
   const addCurrentRecord = () => {
     const newRecord = {
       time: currentData.updatedAt,
@@ -92,14 +139,14 @@ export default function App() {
 
     setHistories((prev) => ({
       ...prev,
-      [selectedCat]: [newRecord, ...(prev[selectedCat] || [])].slice(0, 8),
+      [cat.id]: [newRecord, ...(prev[cat.id] || [])].slice(0, 8),
     }));
   };
 
   const resetCurrentCatHistory = () => {
     setHistories((prev) => ({
       ...prev,
-      [selectedCat]: initialHistories[selectedCat] || [],
+      [cat.id]: initialHistories[cat.id] || [],
     }));
   };
 
@@ -113,7 +160,7 @@ export default function App() {
           </div>
 
           <div className="petList">
-            {Object.values(cats).map((item) => (
+            {Object.values(pets).map((item) => (
               <button
                 key={item.id}
                 className={classNames("petButton", selectedCat === item.id && "selected")}
@@ -127,6 +174,40 @@ export default function App() {
               </button>
             ))}
           </div>
+
+          <form className="petForm" onSubmit={addPet}>
+            <p className="sectionLabel">Registrar mascota</p>
+            <input
+              value={newPet.name}
+              onChange={(event) => setNewPet((prev) => ({ ...prev, name: event.target.value }))}
+              placeholder="Nombre"
+              aria-label="Nombre de la mascota"
+            />
+            <div className="formGrid">
+              <select
+                value={newPet.species}
+                onChange={(event) => setNewPet((prev) => ({ ...prev, species: event.target.value }))}
+                aria-label="Especie"
+              >
+                <option>Gato</option>
+                <option>Perro</option>
+                <option>Otro</option>
+              </select>
+              <input
+                value={newPet.age}
+                onChange={(event) => setNewPet((prev) => ({ ...prev, age: event.target.value }))}
+                placeholder="Edad"
+                aria-label="Edad"
+              />
+            </div>
+            <input
+              value={newPet.note}
+              onChange={(event) => setNewPet((prev) => ({ ...prev, note: event.target.value }))}
+              placeholder="Nota de comportamiento"
+              aria-label="Nota de comportamiento"
+            />
+            <Button variant="primary" type="submit">Agregar mascota</Button>
+          </form>
 
         </aside>
 
