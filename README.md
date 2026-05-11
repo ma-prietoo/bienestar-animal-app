@@ -6,7 +6,7 @@ Prueba conceptual de una app para visualizar el analisis de bienestar de mascota
 
 - Interfaz tipo app movil para consultar mascotas.
 - Escenarios simulados de bienestar animal.
-- Algoritmo de analisis de temperatura, actividad, sueno, comida, BLE, bateria, buffer y GNSS.
+- Algoritmo de analisis de temperatura, actividad, sueño, comida, BLE, bateria, buffer y GNSS.
 - Alertas explicadas para el usuario.
 - Historial reciente por mascota.
 
