@@ -45,6 +45,27 @@ http://127.0.0.1:5173/
 npm run build
 ```
 
+## Desplegar en Vercel
+
+1. Entrar a https://vercel.com/new
+2. Importar el repositorio `ma-prietoo/bienestar-animal-app`
+3. Framework Preset: `Vite`
+4. Build Command: `npm run build`
+5. Output Directory: `dist`
+6. Deploy
+
+Vercel publicara la app en un dominio HTTPS. Desde ese enlace los usuarios podran abrirla en el navegador e instalarla como app PWA cuando el navegador muestre la opcion de instalacion.
+
+## App instalable
+
+La app incluye:
+
+- `public/manifest.webmanifest`
+- `public/sw.js`
+- `public/icon.svg`
+
+Estos archivos permiten que la experiencia funcione como PWA instalable cuando se publica en HTTPS.
+
 ## Nota
 
 Esta app es una prueba conceptual. No realiza diagnosticos medicos ni reemplaza la evaluacion veterinaria.
