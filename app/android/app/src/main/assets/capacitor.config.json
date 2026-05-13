@@ -1,0 +1,8 @@
+{
+	"appId": "com.maprietoo.bienestaranimal",
+	"appName": "Bienestar Animal",
+	"webDir": "dist",
+	"server": {
+		"androidScheme": "https"
+	}
+}

@@ -1,8 +1,19 @@
+.DS_Store
 node_modules/
 dist/
-.DS_Store
-.env
-.env.local
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+
+# App
+app/node_modules/
+app/dist/
+app/.env
+app/.env.local
+app/.vercel/
+app/npm-debug.log*
+app/yarn-debug.log*
+app/yarn-error.log*
+
+# Firmware / Wokwi
+firmware-collar-gato/.pio/
+firmware-collar-gato/.vscode/
+firmware-collar-gato/*.bin
+firmware-collar-gato/*.elf

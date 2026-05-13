@@ -1,0 +1,19 @@
+{
+  "name": "Bienestar Animal",
+  "short_name": "Bienestar",
+  "description": "App instalable para monitoreo conceptual de bienestar animal.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#e2e8f0",
+  "theme_color": "#020617",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
